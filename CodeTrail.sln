@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C28B07FD-C414-42C9-9558-AA69D1361505}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTrail.Api", "src\CodeTrail.Api\CodeTrail.Api.csproj", "{9FF12CB6-27DE-4633-8258-32CE9693877D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTrail.Application", "src\CodeTrail.Application\CodeTrail.Application.csproj", "{7FC95220-FB96-4125-85F4-B41C1D0383C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTrail.Domain", "src\CodeTrail.Domain\CodeTrail.Domain.csproj", "{F57108EB-DCBE-451A-8EF8-D9B7F14AE199}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTrail.Infrastructure", "src\CodeTrail.Infrastructure\CodeTrail.Infrastructure.csproj", "{7ECF9A35-7629-41AA-8ECC-FD827444EC60}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{54727CA9-F698-4A12-90F3-1E7774DBA08A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeTrail.Tests", "tests\CodeTrail.Tests\CodeTrail.Tests.csproj", "{0AE09C97-A79E-4999-9ABA-ABE90105592E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FF12CB6-27DE-4633-8258-32CE9693877D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FF12CB6-27DE-4633-8258-32CE9693877D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FF12CB6-27DE-4633-8258-32CE9693877D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FF12CB6-27DE-4633-8258-32CE9693877D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC95220-FB96-4125-85F4-B41C1D0383C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC95220-FB96-4125-85F4-B41C1D0383C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC95220-FB96-4125-85F4-B41C1D0383C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC95220-FB96-4125-85F4-B41C1D0383C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F57108EB-DCBE-451A-8EF8-D9B7F14AE199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F57108EB-DCBE-451A-8EF8-D9B7F14AE199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F57108EB-DCBE-451A-8EF8-D9B7F14AE199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F57108EB-DCBE-451A-8EF8-D9B7F14AE199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ECF9A35-7629-41AA-8ECC-FD827444EC60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ECF9A35-7629-41AA-8ECC-FD827444EC60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ECF9A35-7629-41AA-8ECC-FD827444EC60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ECF9A35-7629-41AA-8ECC-FD827444EC60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AE09C97-A79E-4999-9ABA-ABE90105592E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AE09C97-A79E-4999-9ABA-ABE90105592E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AE09C97-A79E-4999-9ABA-ABE90105592E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AE09C97-A79E-4999-9ABA-ABE90105592E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9FF12CB6-27DE-4633-8258-32CE9693877D} = {C28B07FD-C414-42C9-9558-AA69D1361505}
+		{7FC95220-FB96-4125-85F4-B41C1D0383C2} = {C28B07FD-C414-42C9-9558-AA69D1361505}
+		{F57108EB-DCBE-451A-8EF8-D9B7F14AE199} = {C28B07FD-C414-42C9-9558-AA69D1361505}
+		{7ECF9A35-7629-41AA-8ECC-FD827444EC60} = {C28B07FD-C414-42C9-9558-AA69D1361505}
+		{0AE09C97-A79E-4999-9ABA-ABE90105592E} = {54727CA9-F698-4A12-90F3-1E7774DBA08A}
+	EndGlobalSection
+EndGlobal
