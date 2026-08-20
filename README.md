@@ -7,7 +7,7 @@
 ## Стек
 
 **Бэкенд**
-- ASP.NET Core 8 Web API
+- ASP.NET Core 9 Web API
 - Entity Framework Core (Code First, миграции коммитятся в репозиторий)
 - PostgreSQL или SQLite
 - JWT-аутентификация
@@ -41,7 +41,7 @@ Api  →  Application  →  Domain
 
 ```
 CodeTrail.sln
-global.json                     # фиксирует SDK .NET 8
+global.json                     # фиксирует SDK .NET 9
 src/
   CodeTrail.Api/
   CodeTrail.Application/
