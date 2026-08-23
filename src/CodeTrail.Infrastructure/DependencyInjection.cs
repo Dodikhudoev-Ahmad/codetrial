@@ -1,3 +1,6 @@
+using CodeTrail.Application.Auth;
+using CodeTrail.Application.Options;
+using CodeTrail.Infrastructure.Auth;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +16,11 @@ public static class DependencyInjection
 
         services.AddDbContext<CodeTrailDbContext>(options =>
             options.UseNpgsql(connectionString));
+
+        services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+        services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

@@ -1,3 +1,4 @@
+using CodeTrail.Application.Auth;
 using CodeTrail.Domain.Entities;
 using CodeTrail.Domain.Enums;
 using CodeTrail.Infrastructure.Persistence;
@@ -7,20 +8,23 @@ namespace CodeTrail.Infrastructure.Seeding;
 
 public static class CourseSeeder
 {
-    public static async Task SeedAsync(CodeTrailDbContext context)
+    // Test credential for the seeded first administrator, documented in the README
+    // once launch instructions are written. Anyone with repo access can derive it
+    // from this constant, so it must never be reused for a real account.
+    public const string AdminEmail = "admin@codetrail.local";
+    public const string AdminPassword = "Admin123!";
+
+    public static async Task SeedAsync(CodeTrailDbContext context, IPasswordHasher passwordHasher)
     {
         if (await context.Courses.AnyAsync())
         {
             return;
         }
 
-        // Placeholder credential: this account exists only to satisfy Course.AuthorId
-        // and is not reachable through any login endpoint yet. Once registration/hashing
-        // lands, replace this with a properly hashed password for the seeded administrator.
         var author = new User
         {
-            Email = "admin@codetrail.local",
-            PasswordHash = "SEED-PLACEHOLDER-NOT-A-VALID-HASH",
+            Email = AdminEmail,
+            PasswordHash = passwordHasher.Hash(AdminPassword),
             DisplayName = "CodeTrail Team",
             Role = UserRole.Admin,
             CreatedAt = DateTime.UtcNow
