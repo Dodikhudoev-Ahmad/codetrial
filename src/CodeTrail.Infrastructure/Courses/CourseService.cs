@@ -130,33 +130,17 @@ public class CourseService(CodeTrailDbContext db) : ICourseService
     private static List<LessonSummaryDto> BuildLessonSummaries(
         IEnumerable<Lesson> lessons, bool isEnrolled, ICollection<Guid> passedLessonIds)
     {
-        var result = new List<LessonSummaryDto>();
-        var previousPassed = true; // nothing blocks the first lesson once enrolled
+        var lessonList = lessons.OrderBy(l => l.Order).ToList();
+        var statuses = LessonUnlockCalculator.ComputeStatuses(
+            lessonList.Select(l => (l.Id, l.Order)), isEnrolled, passedLessonIds);
 
-        foreach (var lesson in lessons)
+        return lessonList.Select(l => new LessonSummaryDto
         {
-            var passed = passedLessonIds.Contains(lesson.Id);
-
-            var status = !isEnrolled
-                ? LessonStatus.Locked
-                : passed
-                    ? LessonStatus.Passed
-                    : previousPassed
-                        ? LessonStatus.Available
-                        : LessonStatus.Locked;
-
-            result.Add(new LessonSummaryDto
-            {
-                Id = lesson.Id,
-                Order = lesson.Order,
-                Title = lesson.Title,
-                XpReward = lesson.XpReward,
-                Status = status
-            });
-
-            previousPassed = passed;
-        }
-
-        return result;
+            Id = l.Id,
+            Order = l.Order,
+            Title = l.Title,
+            XpReward = l.XpReward,
+            Status = statuses[l.Id]
+        }).ToList();
     }
 }
