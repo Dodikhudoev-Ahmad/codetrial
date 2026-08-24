@@ -25,16 +25,25 @@ public class CourseService(CodeTrailDbContext db, ILogger<CourseService> logger)
             courses = courses.Where(c => c.Language == query.Language);
         }
 
+        // Free-text search is done in memory rather than translated to SQL: SQLite's
+        // built-in LIKE/LOWER only case-fold ASCII, which would silently break search
+        // for the Cyrillic course titles/descriptions this catalog actually has. The
+        // catalog is small by design (a handful of courses), so this trade-off is cheap.
+        var candidates = await courses.Include(c => c.Lessons).ToListAsync();
+
         if (!string.IsNullOrWhiteSpace(query.Search))
         {
-            var pattern = $"%{query.Search.Trim()}%";
-            courses = courses.Where(c => EF.Functions.ILike(c.Title, pattern) || EF.Functions.ILike(c.Description, pattern));
+            var term = query.Search.Trim();
+            candidates = candidates
+                .Where(c => c.Title.Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || c.Description.Contains(term, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
-        var totalCount = await courses.CountAsync();
+        var totalCount = candidates.Count;
 
-        var items = await courses
-            .OrderBy(c => c.Title)
+        var items = candidates
+            .OrderBy(c => c.Title, StringComparer.Ordinal)
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .Select(c => new CourseSummaryDto
@@ -47,7 +56,7 @@ public class CourseService(CodeTrailDbContext db, ILogger<CourseService> logger)
                 Language = c.Language,
                 LessonsCount = c.Lessons.Count
             })
-            .ToListAsync();
+            .ToList();
 
         return new PagedResult<CourseSummaryDto>
         {

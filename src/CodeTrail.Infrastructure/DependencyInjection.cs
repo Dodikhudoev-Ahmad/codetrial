@@ -22,7 +22,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("Default");
 
         services.AddDbContext<CodeTrailDbContext>(options =>
-            options.UseNpgsql(connectionString));
+            options.UseSqlite(connectionString));
 
         services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
         services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();

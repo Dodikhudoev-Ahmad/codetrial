@@ -34,6 +34,9 @@ secrets.json
 ## EF Core
 *.mdf
 *.ldf
+*.db
+*.db-shm
+*.db-wal
 
 ## Node / frontend (added when the frontend project is scaffolded)
 node_modules/

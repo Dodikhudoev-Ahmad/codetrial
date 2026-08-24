@@ -9,7 +9,7 @@
 **Бэкенд**
 - ASP.NET Core 10 Web API
 - Entity Framework Core (Code First, миграции коммитятся в репозиторий)
-- PostgreSQL или SQLite
+- SQLite (файловая БД, без установки сервера — база создаётся автоматически при первом запуске)
 - JWT-аутентификация
 - FluentValidation / DataAnnotations
 - Serilog / встроенный ILogger

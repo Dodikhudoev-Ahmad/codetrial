@@ -15,15 +15,15 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Role = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    TotalXp = table.Column<int>(type: "integer", nullable: false),
-                    CurrentStreak = table.Column<int>(type: "integer", nullable: false),
-                    LastActivityDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
+                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
+                    DisplayName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Role = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    TotalXp = table.Column<int>(type: "INTEGER", nullable: false),
+                    CurrentStreak = table.Column<int>(type: "INTEGER", nullable: false),
+                    LastActivityDate = table.Column<DateOnly>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,14 +34,14 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Slug = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    Level = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Language = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Slug = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 2000, nullable: false),
+                    Level = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Language = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    IsPublished = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AuthorId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,11 +58,11 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "Enrollments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EnrolledAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CourseId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EnrolledAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CompletedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,12 +85,12 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "Lessons",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    TheoryMarkdown = table.Column<string>(type: "text", nullable: false),
-                    XpReward = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CourseId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    TheoryMarkdown = table.Column<string>(type: "TEXT", nullable: false),
+                    XpReward = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,14 +107,14 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "LessonAttempts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LessonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    StartedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FinishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ScorePercent = table.Column<int>(type: "integer", nullable: false),
-                    IsPassed = table.Column<bool>(type: "boolean", nullable: false),
-                    AttemptNumber = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    LessonId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FinishedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ScorePercent = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsPassed = table.Column<bool>(type: "INTEGER", nullable: false),
+                    AttemptNumber = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -137,13 +137,13 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "Questions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    LessonId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    Type = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Text = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    CodeSnippet = table.Column<string>(type: "text", nullable: true),
-                    Explanation = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    LessonId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Order = table.Column<int>(type: "INTEGER", nullable: false),
+                    Type = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Text = table.Column<string>(type: "TEXT", maxLength: 2000, nullable: false),
+                    CodeSnippet = table.Column<string>(type: "TEXT", nullable: true),
+                    Explanation = table.Column<string>(type: "TEXT", maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,10 +160,10 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "AnswerOptions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Text = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Text = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    IsCorrect = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,11 +180,11 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "AnswerSubmissions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AttemptId = table.Column<Guid>(type: "uuid", nullable: false),
-                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GivenAnswer = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    IsCorrect = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AttemptId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    QuestionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    GivenAnswer = table.Column<string>(type: "TEXT", maxLength: 2000, nullable: false),
+                    IsCorrect = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -207,9 +207,9 @@ namespace CodeTrail.Infrastructure.Persistence.Migrations
                 name: "ShortAnswerKeys",
                 columns: table => new
                 {
-                    QuestionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExpectedAnswer = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    IsCaseSensitive = table.Column<bool>(type: "boolean", nullable: false)
+                    QuestionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ExpectedAnswer = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    IsCaseSensitive = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
