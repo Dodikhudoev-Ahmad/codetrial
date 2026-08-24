@@ -6,15 +6,16 @@ using CodeTrail.Application.Lessons.Exceptions;
 using CodeTrail.Domain.Entities;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CodeTrail.Infrastructure.Attempts;
 
 public class AttemptService(
     CodeTrailDbContext db,
     ILessonAccessGuard accessGuard,
-    IAnswerCheckerResolver checkerResolver) : IAttemptService
+    IAnswerCheckerResolver checkerResolver,
+    ILogger<AttemptService> logger) : IAttemptService
 {
-    private const int PassingScorePercent = 70;
     private const int MaxAttemptsPerDay = 5;
 
     public async Task<AttemptResultDto> SubmitAttemptAsync(Guid lessonId, Guid userId, SubmitAttemptRequest request)
@@ -39,8 +40,8 @@ public class AttemptService(
 
         ValidateSubmissionCoversAllQuestions(lesson, request);
 
-        // Must be read before this attempt is recorded, to know whether it is the
-        // one that first passes the lesson (business rule 4: XP only on first pass).
+        // Must be read before this attempt is recorded, to know whether it is the one
+        // that first passes the lesson (business rule 4: XP only on first pass).
         var hasPriorPass = await db.LessonAttempts
             .AnyAsync(a => a.UserId == userId && a.LessonId == lessonId && a.IsPassed);
 
@@ -49,8 +50,8 @@ public class AttemptService(
 
         var (submissions, questionResults, correctCount) = CheckAnswers(lesson.Questions, request.Answers);
 
-        var scorePercent = (int)Math.Round(correctCount * 100.0 / lesson.Questions.Count);
-        var isPassed = scorePercent >= PassingScorePercent;
+        var scorePercent = AttemptScoreCalculator.CalculateScorePercent(correctCount, lesson.Questions.Count);
+        var isPassed = AttemptScoreCalculator.IsPassing(scorePercent);
         var now = DateTime.UtcNow;
 
         var attempt = new LessonAttempt
@@ -65,26 +66,31 @@ public class AttemptService(
             AnswerSubmissions = submissions
         };
 
-        var xpAwarded = 0;
-
-        // Rule 12: attempt, progress, XP and streak all commit together.
-        await using var transaction = await db.Database.BeginTransactionAsync();
-
         db.LessonAttempts.Add(attempt);
-        await db.SaveChangesAsync();
 
         var user = await db.Users.FirstAsync(u => u.Id == userId);
-        UpdateStreak(user, now);
+        var (newStreak, newLastActivityDate) = StreakCalculator.Apply(
+            user.CurrentStreak, user.LastActivityDate, DateOnly.FromDateTime(now));
+        user.CurrentStreak = newStreak;
+        user.LastActivityDate = newLastActivityDate;
+
+        var xpAwarded = 0;
 
         if (isPassed && !hasPriorPass)
         {
             xpAwarded = lesson.XpReward;
             user.TotalXp += xpAwarded;
-            await MaybeCompleteEnrollmentAsync(lesson.CourseId, userId, now);
+            await MaybeCompleteEnrollmentAsync(lesson.CourseId, userId, lessonId, now);
         }
 
+        // Rule 12: attempt, XP, streak and course completion commit together - a single
+        // SaveChanges call is already atomic for a relational provider, no explicit
+        // transaction needed.
         await db.SaveChangesAsync();
-        await transaction.CommitAsync();
+
+        logger.LogInformation(
+            "User {UserId} submitted attempt {AttemptId} for lesson {LessonId}: {ScorePercent}% ({Correct}/{Total}), passed={IsPassed}, xpAwarded={XpAwarded}",
+            userId, attempt.Id, lessonId, scorePercent, correctCount, lesson.Questions.Count, isPassed, xpAwarded);
 
         return new AttemptResultDto
         {
@@ -197,36 +203,24 @@ public class AttemptService(
         return (submissions, results, correctCount);
     }
 
-    // Business rule 8: +1 if the previous activity was yesterday, reset to 1 if a day
-    // was skipped (or this is the very first activity), unchanged if already active today.
-    private static void UpdateStreak(User user, DateTime nowUtc)
-    {
-        var today = DateOnly.FromDateTime(nowUtc);
-
-        if (user.LastActivityDate == today)
-        {
-            return;
-        }
-
-        user.CurrentStreak = user.LastActivityDate == today.AddDays(-1)
-            ? user.CurrentStreak + 1
-            : 1;
-
-        user.LastActivityDate = today;
-    }
-
     // Business rule 6: a course is complete once every one of its lessons has been passed.
-    private async Task MaybeCompleteEnrollmentAsync(Guid courseId, Guid userId, DateTime now)
+    // The lesson just passed by this attempt hasn't been persisted yet (SaveChanges runs
+    // once, at the end), so it's folded into the passed set explicitly rather than
+    // re-queried from the database.
+    private async Task MaybeCompleteEnrollmentAsync(Guid courseId, Guid userId, Guid justPassedLessonId, DateTime now)
     {
         var totalLessons = await db.Lessons.CountAsync(l => l.CourseId == courseId);
 
-        var passedLessons = await db.LessonAttempts
+        var passedLessonIds = (await db.LessonAttempts
             .Where(a => a.UserId == userId && a.Lesson.CourseId == courseId && a.IsPassed)
             .Select(a => a.LessonId)
             .Distinct()
-            .CountAsync();
+            .ToListAsync())
+            .ToHashSet();
 
-        if (passedLessons < totalLessons)
+        passedLessonIds.Add(justPassedLessonId);
+
+        if (passedLessonIds.Count < totalLessons)
         {
             return;
         }
@@ -237,6 +231,7 @@ public class AttemptService(
         if (enrollment is not null && enrollment.CompletedAt is null)
         {
             enrollment.CompletedAt = now;
+            logger.LogInformation("User {UserId} completed course {CourseId}", userId, courseId);
         }
     }
 }

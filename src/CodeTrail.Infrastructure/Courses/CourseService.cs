@@ -5,10 +5,11 @@ using CodeTrail.Application.Courses.Exceptions;
 using CodeTrail.Domain.Entities;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CodeTrail.Infrastructure.Courses;
 
-public class CourseService(CodeTrailDbContext db) : ICourseService
+public class CourseService(CodeTrailDbContext db, ILogger<CourseService> logger) : ICourseService
 {
     public async Task<PagedResult<CourseSummaryDto>> GetCoursesAsync(CourseListQuery query)
     {
@@ -123,6 +124,8 @@ public class CourseService(CodeTrailDbContext db) : ICourseService
             // Race between two concurrent enroll requests for the same user/course.
             throw new AlreadyEnrolledException(courseId);
         }
+
+        logger.LogInformation("User {UserId} enrolled in course {CourseId}", userId, courseId);
 
         return new EnrollmentDto { CourseId = courseId, EnrolledAt = enrollment.EnrolledAt };
     }

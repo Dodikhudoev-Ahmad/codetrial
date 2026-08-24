@@ -5,13 +5,15 @@ using CodeTrail.Domain.Entities;
 using CodeTrail.Domain.Enums;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CodeTrail.Infrastructure.Auth;
 
 public class AuthService(
     CodeTrailDbContext db,
     IPasswordHasher passwordHasher,
-    IJwtTokenGenerator tokenGenerator) : IAuthService
+    IJwtTokenGenerator tokenGenerator,
+    ILogger<AuthService> logger) : IAuthService
 {
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
@@ -47,6 +49,8 @@ public class AuthService(
             throw new EmailAlreadyInUseException(email);
         }
 
+        logger.LogInformation("User {UserId} registered with email {Email}", user.Id, email);
+
         return BuildAuthResponse(user);
     }
 
@@ -72,6 +76,8 @@ public class AuthService(
             user.PasswordHash = passwordHasher.Hash(request.Password);
             await db.SaveChangesAsync();
         }
+
+        logger.LogInformation("User {UserId} logged in", user.Id);
 
         return BuildAuthResponse(user);
     }

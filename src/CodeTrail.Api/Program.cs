@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using CodeTrail.Api.ErrorHandling;
 using CodeTrail.Application.Auth;
 using CodeTrail.Application.Options;
 using CodeTrail.Infrastructure;
@@ -13,6 +14,9 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -74,6 +78,8 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
     await CourseSeeder.SeedAsync(db, passwordHasher);
 }
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
