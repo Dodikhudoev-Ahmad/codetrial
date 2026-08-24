@@ -1,7 +1,10 @@
+using CodeTrail.Application.Attempts;
+using CodeTrail.Application.Attempts.AnswerCheckers;
 using CodeTrail.Application.Auth;
 using CodeTrail.Application.Courses;
 using CodeTrail.Application.Lessons;
 using CodeTrail.Application.Options;
+using CodeTrail.Infrastructure.Attempts;
 using CodeTrail.Infrastructure.Auth;
 using CodeTrail.Infrastructure.Courses;
 using CodeTrail.Infrastructure.Lessons;
@@ -27,6 +30,13 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<ILessonService, LessonService>();
+        services.AddScoped<ILessonAccessGuard, LessonAccessGuard>();
+
+        services.AddScoped<IAnswerChecker, SingleChoiceAnswerChecker>();
+        services.AddScoped<IAnswerChecker, MultiChoiceAnswerChecker>();
+        services.AddScoped<IAnswerChecker, ShortAnswerAnswerChecker>();
+        services.AddScoped<IAnswerCheckerResolver, AnswerCheckerResolver>();
+        services.AddScoped<IAttemptService, AttemptService>();
 
         return services;
     }
