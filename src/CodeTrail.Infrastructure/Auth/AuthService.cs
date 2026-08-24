@@ -103,7 +103,7 @@ public class AuthService(
         Id = user.Id,
         Email = user.Email,
         DisplayName = user.DisplayName,
-        Role = user.Role.ToString(),
+        Role = user.Role,
         TotalXp = user.TotalXp,
         CurrentStreak = user.CurrentStreak,
         LastActivityDate = user.LastActivityDate,

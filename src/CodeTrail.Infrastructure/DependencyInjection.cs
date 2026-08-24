@@ -1,6 +1,8 @@
 using CodeTrail.Application.Auth;
+using CodeTrail.Application.Courses;
 using CodeTrail.Application.Options;
 using CodeTrail.Infrastructure.Auth;
+using CodeTrail.Infrastructure.Courses;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasherAdapter>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICourseService, CourseService>();
 
         return services;
     }
