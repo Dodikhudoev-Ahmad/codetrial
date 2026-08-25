@@ -159,3 +159,139 @@ export interface AttemptResultDto {
 // Business rule 2: a lesson counts as passed at 70% or higher (mirrors the backend's
 // AttemptScoreCalculator.PassingScorePercent).
 export const PASSING_SCORE_PERCENT = 70;
+
+export interface CourseProgressDto {
+  courseId: string;
+  courseTitle: string;
+  courseSlug: string;
+  totalLessons: number;
+  passedLessons: number;
+  enrolledAt: string;
+  completedAt: string | null;
+}
+
+export type LeaderboardPeriod = "week" | "all";
+
+export interface LeaderboardEntryDto {
+  rank: number;
+  userId: string;
+  displayName: string;
+  xp: number;
+}
+
+// --- Admin ---
+
+export interface AdminCourseListItemDto {
+  id: string;
+  title: string;
+  slug: string;
+  level: CourseLevel;
+  language: string;
+  isPublished: boolean;
+  lessonsCount: number;
+}
+
+export interface AdminLessonSummaryDto {
+  id: string;
+  order: number;
+  title: string;
+  xpReward: number;
+  questionsCount: number;
+}
+
+export interface AdminCourseDetailDto {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  level: CourseLevel;
+  language: string;
+  isPublished: boolean;
+  lessons: AdminLessonSummaryDto[];
+}
+
+export interface UpsertCourseRequest {
+  title: string;
+  slug: string;
+  description: string;
+  level: CourseLevel;
+  language: string;
+  isPublished: boolean;
+}
+
+export interface AdminQuestionSummaryDto {
+  id: string;
+  order: number;
+  type: QuestionType;
+  text: string;
+}
+
+export interface AdminLessonDetailDto {
+  id: string;
+  courseId: string;
+  order: number;
+  title: string;
+  theoryMarkdown: string;
+  xpReward: number;
+  questions: AdminQuestionSummaryDto[];
+}
+
+export interface UpsertLessonRequest {
+  courseId: string;
+  order: number;
+  title: string;
+  theoryMarkdown: string;
+  xpReward: number;
+}
+
+export interface AdminAnswerOptionDto {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface AdminQuestionDetailDto {
+  id: string;
+  lessonId: string;
+  order: number;
+  type: QuestionType;
+  text: string;
+  codeSnippet: string | null;
+  explanation: string;
+  options: AdminAnswerOptionDto[];
+  expectedAnswer: string | null;
+  isCaseSensitive: boolean;
+}
+
+export interface UpsertAnswerOptionRequest {
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface UpsertQuestionRequest {
+  lessonId: string;
+  type: QuestionType;
+  text: string;
+  codeSnippet: string | null;
+  explanation: string;
+  options: UpsertAnswerOptionRequest[];
+  expectedAnswer: string | null;
+  isCaseSensitive: boolean;
+}
+
+export interface LessonStatsDto {
+  lessonId: string;
+  lessonTitle: string;
+  attemptsCount: number;
+  studentsPassedCount: number;
+  averageScorePercent: number;
+}
+
+export interface CourseStatsDto {
+  courseId: string;
+  courseTitle: string;
+  enrollmentsCount: number;
+  completionsCount: number;
+  averageScorePercent: number;
+  lessons: LessonStatsDto[];
+}

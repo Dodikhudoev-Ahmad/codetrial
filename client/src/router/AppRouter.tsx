@@ -5,7 +5,6 @@ import { LoadingState } from "../components/LoadingState";
 import { RequireAuth } from "../components/routing/RequireAuth";
 import { RequireGuest } from "../components/routing/RequireGuest";
 import { RequireRole } from "../components/routing/RequireRole";
-import { AdminPage } from "../pages/AdminPage";
 import { AttemptResultPage } from "../pages/AttemptResultPage";
 import { CatalogPage } from "../pages/CatalogPage";
 import { CourseDetailPage } from "../pages/CourseDetailPage";
@@ -19,6 +18,21 @@ import { RegisterPage } from "../pages/RegisterPage";
 // is only needed here, and it's heavy - splitting it into its own chunk keeps the
 // catalog/login/etc. bundle light for visitors who never open a lesson.
 const LessonPage = lazy(() => import("../pages/LessonPage").then((m) => ({ default: m.LessonPage })));
+
+// The admin section is only ever used by admins - split into its own chunk too.
+const AdminCoursesPage = lazy(() =>
+  import("../pages/admin/AdminCoursesPage").then((m) => ({ default: m.AdminCoursesPage })),
+);
+const AdminCourseDetailPage = lazy(() =>
+  import("../pages/admin/AdminCourseDetailPage").then((m) => ({ default: m.AdminCourseDetailPage })),
+);
+const AdminLessonDetailPage = lazy(() =>
+  import("../pages/admin/AdminLessonDetailPage").then((m) => ({ default: m.AdminLessonDetailPage })),
+);
+
+function LazyFallback() {
+  return <LoadingState />;
+}
 
 export function AppRouter() {
   return (
@@ -42,7 +56,7 @@ export function AppRouter() {
           <Route
             path="lessons/:id"
             element={
-              <Suspense fallback={<LoadingState label="Загружаем урок…" />}>
+              <Suspense fallback={<LazyFallback />}>
                 <LessonPage />
               </Suspense>
             }
@@ -52,7 +66,30 @@ export function AppRouter() {
         </Route>
 
         <Route element={<RequireRole role="Admin" />}>
-          <Route path="admin" element={<AdminPage />} />
+          <Route
+            path="admin"
+            element={
+              <Suspense fallback={<LazyFallback />}>
+                <AdminCoursesPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="admin/courses/:id"
+            element={
+              <Suspense fallback={<LazyFallback />}>
+                <AdminCourseDetailPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="admin/lessons/:id"
+            element={
+              <Suspense fallback={<LazyFallback />}>
+                <AdminLessonDetailPage />
+              </Suspense>
+            }
+          />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
