@@ -92,9 +92,14 @@ public class AttemptService(
             "User {UserId} submitted attempt {AttemptId} for lesson {LessonId}: {ScorePercent}% ({Correct}/{Total}), passed={IsPassed}, xpAwarded={XpAwarded}",
             userId, attempt.Id, lessonId, scorePercent, correctCount, lesson.Questions.Count, isPassed, xpAwarded);
 
+        var (courseSlug, nextLessonId) = await GetNavigationInfoAsync(lesson.CourseId, lesson.Order);
+
         return new AttemptResultDto
         {
             AttemptId = attempt.Id,
+            LessonId = lessonId,
+            CourseSlug = courseSlug,
+            NextLessonId = nextLessonId,
             ScorePercent = scorePercent,
             IsPassed = isPassed,
             AttemptNumber = attempt.AttemptNumber,
@@ -116,6 +121,8 @@ public class AttemptService(
             throw new AttemptAccessDeniedException(attemptId);
         }
 
+        var lesson = await db.Lessons.FirstAsync(l => l.Id == attempt.LessonId);
+
         var xpAwarded = 0;
 
         if (attempt.IsPassed)
@@ -126,28 +133,40 @@ public class AttemptService(
 
             if (!earlierPass)
             {
-                var lesson = await db.Lessons.FirstAsync(l => l.Id == attempt.LessonId);
                 xpAwarded = lesson.XpReward;
             }
         }
 
+        var (courseSlug, nextLessonId) = await GetNavigationInfoAsync(lesson.CourseId, lesson.Order);
+
         return new AttemptResultDto
         {
             AttemptId = attempt.Id,
+            LessonId = attempt.LessonId,
+            CourseSlug = courseSlug,
+            NextLessonId = nextLessonId,
             ScorePercent = attempt.ScorePercent,
             IsPassed = attempt.IsPassed,
             AttemptNumber = attempt.AttemptNumber,
             XpAwarded = xpAwarded,
-            Questions = attempt.AnswerSubmissions.Select(s => new QuestionResultDto
-            {
-                QuestionId = s.QuestionId,
-                GivenAnswer = s.GivenAnswer,
-                IsCorrect = s.IsCorrect,
-                Explanation = s.Question.Explanation,
-                CorrectOptionIds = s.Question.AnswerOptions.Where(o => o.IsCorrect).Select(o => o.Id).ToList(),
-                CorrectShortAnswer = s.Question.ShortAnswerKey?.ExpectedAnswer
-            }).ToList()
+            Questions = attempt.AnswerSubmissions
+                .Select(s => MapToQuestionResult(s.Question, s.GivenAnswer, s.IsCorrect))
+                .ToList()
         };
+    }
+
+    // "Next lesson" navigation for the result screen: the lesson immediately after this
+    // one in the same course, if any (last lesson in a course has none).
+    private async Task<(string CourseSlug, Guid? NextLessonId)> GetNavigationInfoAsync(Guid courseId, int lessonOrder)
+    {
+        var courseSlug = await db.Courses.Where(c => c.Id == courseId).Select(c => c.Slug).FirstAsync();
+
+        var nextLessonId = await db.Lessons
+            .Where(l => l.CourseId == courseId && l.Order == lessonOrder + 1)
+            .Select(l => (Guid?)l.Id)
+            .FirstOrDefaultAsync();
+
+        return (courseSlug, nextLessonId);
     }
 
     private static void ValidateSubmissionCoversAllQuestions(Lesson lesson, SubmitAttemptRequest request)
@@ -189,19 +208,29 @@ public class AttemptService(
                 IsCorrect = isCorrect
             });
 
-            results.Add(new QuestionResultDto
-            {
-                QuestionId = question.Id,
-                GivenAnswer = givenAnswer,
-                IsCorrect = isCorrect,
-                Explanation = question.Explanation,
-                CorrectOptionIds = question.AnswerOptions.Where(o => o.IsCorrect).Select(o => o.Id).ToList(),
-                CorrectShortAnswer = question.ShortAnswerKey?.ExpectedAnswer
-            });
+            results.Add(MapToQuestionResult(question, givenAnswer, isCorrect));
         }
 
         return (submissions, results, correctCount);
     }
+
+    private static QuestionResultDto MapToQuestionResult(Question question, string givenAnswer, bool isCorrect) => new()
+    {
+        QuestionId = question.Id,
+        QuestionText = question.Text,
+        Type = question.Type,
+        CodeSnippet = question.CodeSnippet,
+        GivenAnswer = givenAnswer,
+        IsCorrect = isCorrect,
+        Explanation = question.Explanation,
+        Options = question.AnswerOptions.Select(o => new AnswerOptionResultDto
+        {
+            Id = o.Id,
+            Text = o.Text,
+            IsCorrect = o.IsCorrect
+        }).ToList(),
+        CorrectShortAnswer = question.ShortAnswerKey?.ExpectedAnswer
+    };
 
     // Business rule 6: a course is complete once every one of its lessons has been passed.
     // The lesson just passed by this attempt hasn't been persisted yet (SaveChanges runs

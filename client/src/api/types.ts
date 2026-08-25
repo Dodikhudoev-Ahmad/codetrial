@@ -90,3 +90,72 @@ export interface CourseListParams {
   page?: number;
   pageSize?: number;
 }
+
+export type QuestionType = "SingleChoice" | "MultiChoice" | "ShortAnswer";
+
+export interface AnswerOptionPreviewDto {
+  id: string;
+  text: string;
+}
+
+export interface QuestionPreviewDto {
+  id: string;
+  order: number;
+  type: QuestionType;
+  text: string;
+  codeSnippet: string | null;
+  options: AnswerOptionPreviewDto[];
+}
+
+export interface LessonDetailDto {
+  id: string;
+  courseId: string;
+  order: number;
+  title: string;
+  theoryMarkdown: string;
+  xpReward: number;
+  questions: QuestionPreviewDto[];
+}
+
+export interface AnswerRequest {
+  questionId: string;
+  givenAnswer: string;
+}
+
+export interface SubmitAttemptRequest {
+  answers: AnswerRequest[];
+}
+
+export interface AnswerOptionResultDto {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface QuestionResultDto {
+  questionId: string;
+  questionText: string;
+  type: QuestionType;
+  codeSnippet: string | null;
+  givenAnswer: string;
+  isCorrect: boolean;
+  explanation: string;
+  options: AnswerOptionResultDto[];
+  correctShortAnswer: string | null;
+}
+
+export interface AttemptResultDto {
+  attemptId: string;
+  lessonId: string;
+  courseSlug: string;
+  nextLessonId: string | null;
+  scorePercent: number;
+  isPassed: boolean;
+  attemptNumber: number;
+  xpAwarded: number;
+  questions: QuestionResultDto[];
+}
+
+// Business rule 2: a lesson counts as passed at 70% or higher (mirrors the backend's
+// AttemptScoreCalculator.PassingScorePercent).
+export const PASSING_SCORE_PERCENT = 70;
