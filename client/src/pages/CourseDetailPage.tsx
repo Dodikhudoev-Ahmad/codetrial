@@ -1,12 +1,13 @@
 import { useParams } from "react-router-dom";
+import { PageHeader } from "../components/PageHeader";
 
 export function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>();
 
   return (
-    <section>
-      <h1>Страница курса</h1>
-      <p>Описание курса и оглавление уроков (курс: {slug}) появятся здесь.</p>
-    </section>
+    <PageHeader
+      title="Страница курса"
+      description={`Описание курса и оглавление уроков (курс: ${slug}) появятся здесь.`}
+    />
   );
 }

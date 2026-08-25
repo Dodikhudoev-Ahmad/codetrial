@@ -1,8 +1,5 @@
+import { PageHeader } from "../components/PageHeader";
+
 export function RegisterPage() {
-  return (
-    <section>
-      <h1>Регистрация</h1>
-      <p>Форма регистрации появится здесь.</p>
-    </section>
-  );
+  return <PageHeader title="Регистрация" description="Форма регистрации появится здесь." />;
 }

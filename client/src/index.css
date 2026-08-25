@@ -1,86 +1,19 @@
-:root {
-  color-scheme: light;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
 
-* {
-  box-sizing: border-box;
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
 }
 
 body {
-  margin: 0;
-  background: #f7f7f9;
-  color: #1a1a1a;
-}
-
-a {
-  color: #2563eb;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.navbar {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  flex-wrap: wrap;
-}
-
-.navbar__brand {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #1a1a1a;
-}
-
-.navbar__links {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.navbar__auth {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-left: auto;
-}
-
-.navbar__user {
-  font-weight: 500;
-}
-
-.app-content {
-  flex: 1;
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1.5rem;
-}
-
-@media (max-width: 640px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .navbar__auth {
-    margin-left: 0;
-  }
+  font-family: var(--font-sans);
+  background: linear-gradient(180deg, var(--color-brand-50) 0%, #f8fafc 320px);
 }

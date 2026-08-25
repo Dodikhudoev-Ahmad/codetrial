@@ -1,8 +1,10 @@
+import { PageHeader } from "../components/PageHeader";
+
 export function AdminPage() {
   return (
-    <section>
-      <h1>Админка</h1>
-      <p>CRUD курсов, уроков и вопросов, статистика по курсу появятся здесь.</p>
-    </section>
+    <PageHeader
+      title="Админка"
+      description="CRUD курсов, уроков и вопросов, статистика по курсу появятся здесь."
+    />
   );
 }
