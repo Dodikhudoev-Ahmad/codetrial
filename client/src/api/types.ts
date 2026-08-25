@@ -36,3 +36,57 @@ export interface ProblemDetails {
   detail?: string;
   status?: number;
 }
+
+export type CourseLevel = "Beginner" | "Intermediate" | "Advanced";
+
+export interface PagedResult<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+export interface CourseSummaryDto {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  level: CourseLevel;
+  language: string;
+  lessonsCount: number;
+}
+
+export type LessonStatus = "Locked" | "Available" | "Passed";
+
+export interface LessonSummaryDto {
+  id: string;
+  order: number;
+  title: string;
+  xpReward: number;
+  status: LessonStatus;
+}
+
+export interface CourseDetailDto {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  level: CourseLevel;
+  language: string;
+  isEnrolled: boolean;
+  lessons: LessonSummaryDto[];
+}
+
+export interface EnrollmentDto {
+  courseId: string;
+  enrolledAt: string;
+}
+
+export interface CourseListParams {
+  level?: CourseLevel;
+  language?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
