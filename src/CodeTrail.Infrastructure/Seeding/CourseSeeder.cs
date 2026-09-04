@@ -631,7 +631,7 @@ public static class CourseSeeder
             author: author,
             lessons: new[]
             {
-    NewLesson(1, "Переменные и типы данных",
+    WithVideo(NewLesson(1, "Переменные и типы данных",
 """
 # Переменные и типы данных
 
@@ -662,6 +662,8 @@ Python — язык с динамической типизацией: одной
             "Как называется тип данных для значений True и False?",
             "Логический тип в Python называется bool.",
             expectedAnswer: "bool")),
+        // freeCodeCamp.org - "Learn Python - Full Course for Beginners"
+        "rfscVS0vtbw"),
 
     NewLesson(2, "Условные операторы",
 """
@@ -1647,6 +1649,12 @@ docker run -v mydata:/var/lib/data myapp
             lesson.Questions.Add(question);
         }
 
+        return lesson;
+    }
+
+    private static Lesson WithVideo(Lesson lesson, string youTubeVideoId)
+    {
+        lesson.YouTubeVideoId = youTubeVideoId;
         return lesson;
     }
 

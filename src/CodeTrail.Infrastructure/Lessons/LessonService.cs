@@ -30,6 +30,7 @@ public class LessonService(CodeTrailDbContext db, ILessonAccessGuard accessGuard
         Title = lesson.Title,
         TheoryMarkdown = lesson.TheoryMarkdown,
         XpReward = lesson.XpReward,
+        YouTubeVideoId = lesson.YouTubeVideoId,
         Questions = lesson.Questions
             .OrderBy(q => q.Order)
             .Select(q => new QuestionPreviewDto

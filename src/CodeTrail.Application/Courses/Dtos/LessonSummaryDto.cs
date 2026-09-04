@@ -6,5 +6,6 @@ public class LessonSummaryDto
     public int Order { get; set; }
     public string Title { get; set; } = string.Empty;
     public int XpReward { get; set; }
+    public bool HasVideo { get; set; }
     public LessonStatus Status { get; set; }
 }

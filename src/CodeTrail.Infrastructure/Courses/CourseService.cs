@@ -152,6 +152,7 @@ public class CourseService(CodeTrailDbContext db, ILogger<CourseService> logger)
             Order = l.Order,
             Title = l.Title,
             XpReward = l.XpReward,
+            HasVideo = !string.IsNullOrEmpty(l.YouTubeVideoId),
             Status = statuses[l.Id]
         }).ToList();
     }

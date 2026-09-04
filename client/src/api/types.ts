@@ -64,6 +64,7 @@ export interface LessonSummaryDto {
   order: number;
   title: string;
   xpReward: number;
+  hasVideo: boolean;
   status: LessonStatus;
 }
 
@@ -114,6 +115,7 @@ export interface LessonDetailDto {
   title: string;
   theoryMarkdown: string;
   xpReward: number;
+  youTubeVideoId: string | null;
   questions: QuestionPreviewDto[];
 }
 
@@ -233,6 +235,7 @@ export interface AdminLessonDetailDto {
   title: string;
   theoryMarkdown: string;
   xpReward: number;
+  youTubeVideoId: string | null;
   questions: AdminQuestionSummaryDto[];
 }
 
@@ -242,6 +245,7 @@ export interface UpsertLessonRequest {
   title: string;
   theoryMarkdown: string;
   xpReward: number;
+  videoUrl: string | null;
 }
 
 export interface AdminAnswerOptionDto {

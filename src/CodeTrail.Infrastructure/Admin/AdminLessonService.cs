@@ -1,6 +1,7 @@
 using CodeTrail.Application.Admin;
 using CodeTrail.Application.Admin.Dtos;
 using CodeTrail.Application.Admin.Exceptions;
+using CodeTrail.Application.Common;
 using CodeTrail.Application.Courses.Exceptions;
 using CodeTrail.Application.Lessons.Exceptions;
 using CodeTrail.Domain.Entities;
@@ -26,6 +27,11 @@ public class AdminLessonService(CodeTrailDbContext db) : IAdminLessonService
             throw new CourseNotFoundException(request.CourseId.ToString());
         }
 
+        if (!YouTubeUrlParser.TryExtractVideoId(request.VideoUrl, out var videoId))
+        {
+            throw new InvalidYouTubeUrlException(request.VideoUrl!);
+        }
+
         // New lessons are appended at the end of the course - explicit reordering
         // happens through update, where a conflict with an existing sibling is checked.
         var maxOrder = await db.Lessons
@@ -39,7 +45,8 @@ public class AdminLessonService(CodeTrailDbContext db) : IAdminLessonService
             Order = maxOrder + 1,
             Title = request.Title.Trim(),
             TheoryMarkdown = request.TheoryMarkdown,
-            XpReward = request.XpReward
+            XpReward = request.XpReward,
+            YouTubeVideoId = videoId
         };
 
         db.Lessons.Add(lesson);
@@ -52,9 +59,15 @@ public class AdminLessonService(CodeTrailDbContext db) : IAdminLessonService
     {
         var lesson = await LoadLessonWithQuestionsAsync(id);
 
+        if (!YouTubeUrlParser.TryExtractVideoId(request.VideoUrl, out var videoId))
+        {
+            throw new InvalidYouTubeUrlException(request.VideoUrl!);
+        }
+
         lesson.Title = request.Title.Trim();
         lesson.TheoryMarkdown = request.TheoryMarkdown;
         lesson.XpReward = request.XpReward;
+        lesson.YouTubeVideoId = videoId;
 
         if (request.Order != lesson.Order)
         {
@@ -105,6 +118,7 @@ public class AdminLessonService(CodeTrailDbContext db) : IAdminLessonService
         Title = lesson.Title,
         TheoryMarkdown = lesson.TheoryMarkdown,
         XpReward = lesson.XpReward,
+        YouTubeVideoId = lesson.YouTubeVideoId,
         Questions = lesson.Questions
             .OrderBy(q => q.Order)
             .Select(q => new AdminQuestionSummaryDto

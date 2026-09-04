@@ -8,5 +8,6 @@ public class LessonDetailDto
     public string Title { get; set; } = string.Empty;
     public string TheoryMarkdown { get; set; } = string.Empty;
     public int XpReward { get; set; }
+    public string? YouTubeVideoId { get; set; }
     public List<QuestionPreviewDto> Questions { get; set; } = [];
 }

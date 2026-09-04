@@ -20,4 +20,9 @@ public class UpsertLessonRequest
 
     [Range(0, 1000)]
     public int XpReward { get; set; }
+
+    // Accepts a full YouTube URL (watch/share/shorts/embed/youtu.be) or a bare
+    // 11-character video id; parsed and normalized to just the id before storage.
+    [MaxLength(500)]
+    public string? VideoUrl { get; set; }
 }

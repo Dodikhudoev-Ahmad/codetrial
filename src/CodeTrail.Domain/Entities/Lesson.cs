@@ -8,6 +8,7 @@ public class Lesson
     public string Title { get; set; } = string.Empty;
     public string TheoryMarkdown { get; set; } = string.Empty;
     public int XpReward { get; set; }
+    public string? YouTubeVideoId { get; set; }
 
     public Course Course { get; set; } = null!;
     public ICollection<Question> Questions { get; set; } = new List<Question>();

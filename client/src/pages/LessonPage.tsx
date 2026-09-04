@@ -5,6 +5,7 @@ import { fetchLesson, submitAttempt } from "../api/lessons";
 import { ErrorBanner } from "../components/form/ErrorBanner";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
+import { LessonVideo } from "../components/lessons/LessonVideo";
 import { MultiChoiceQuestion } from "../components/lessons/MultiChoiceQuestion";
 import { QuestionCard } from "../components/lessons/QuestionCard";
 import { ShortAnswerQuestion } from "../components/lessons/ShortAnswerQuestion";
@@ -66,6 +67,8 @@ export function LessonPage() {
       <p className="mb-6 text-sm font-medium text-brand-600">
         Урок {data.order} · {data.title}
       </p>
+
+      {data.youTubeVideoId && <LessonVideo videoId={data.youTubeVideoId} title={data.title} />}
 
       <TheoryRenderer markdown={data.theoryMarkdown} />
 

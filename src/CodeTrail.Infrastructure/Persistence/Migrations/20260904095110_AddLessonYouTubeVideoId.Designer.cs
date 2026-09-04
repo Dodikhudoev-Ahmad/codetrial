@@ -3,6 +3,7 @@ using System;
 using CodeTrail.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeTrail.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CodeTrailDbContext))]
-    partial class CodeTrailDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260904095110_AddLessonYouTubeVideoId")]
+    partial class AddLessonYouTubeVideoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");

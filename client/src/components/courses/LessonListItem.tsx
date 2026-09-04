@@ -22,7 +22,14 @@ export function LessonListItem({ lesson }: { lesson: LessonSummaryDto }) {
           {lesson.order}
         </span>
         <div>
-          <p className="text-sm font-medium text-slate-900">{lesson.title}</p>
+          <p className="text-sm font-medium text-slate-900">
+            {lesson.title}
+            {lesson.hasVideo && (
+              <span className="ml-1.5 align-middle text-slate-400" aria-label="С видео" title="С видео">
+                🎥
+              </span>
+            )}
+          </p>
           <p className="text-xs text-slate-500">{lesson.xpReward} XP</p>
         </div>
       </div>

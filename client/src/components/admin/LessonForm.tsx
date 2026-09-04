@@ -13,6 +13,7 @@ const schema = z.object({
   theoryMarkdown: z.string().min(1, "Введите текст теории"),
   xpReward: z.number().min(0, "Не может быть отрицательным").max(1000),
   order: z.number().min(1, "Минимум 1"),
+  videoUrl: z.string().max(500).optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -34,16 +35,21 @@ export function LessonForm({ initial, courseId, submitLabel, onSubmit }: LessonF
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: initial ?? { xpReward: 10, order: 1, title: "", theoryMarkdown: "" },
+    defaultValues: initial
+      ? { ...initial, videoUrl: initial.youTubeVideoId ?? "" }
+      : { xpReward: 10, order: 1, title: "", theoryMarkdown: "", videoUrl: "" },
   });
 
   const submit = async (values: FormValues) => {
     setServerError(null);
     try {
-      await onSubmit({ courseId, ...values });
+      await onSubmit({ courseId, ...values, videoUrl: values.videoUrl?.trim() || null });
     } catch (error) {
       setServerError(
-        extractErrorMessage(error, { 409: "Урок с таким порядковым номером уже существует в этом курсе." }),
+        extractErrorMessage(error, {
+          409: "Урок с таким порядковым номером уже существует в этом курсе.",
+          400: "Проверьте ссылку на видео — похоже, это не ссылка на YouTube.",
+        }),
       );
     }
   };
@@ -66,6 +72,14 @@ export function LessonForm({ initial, courseId, submitLabel, onSubmit }: LessonF
         />
         {errors.theoryMarkdown && <p className="mt-1 text-sm text-red-600">{errors.theoryMarkdown.message}</p>}
       </div>
+
+      <TextField
+        id={`${formId}-videoUrl`}
+        label="Видео с YouTube (необязательно)"
+        placeholder="https://www.youtube.com/watch?v=..."
+        error={errors.videoUrl?.message}
+        {...register("videoUrl")}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <TextField
