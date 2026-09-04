@@ -5,4 +5,5 @@ namespace CodeTrail.Application.Lessons;
 public interface ILessonService
 {
     Task<LessonDetailDto> GetLessonAsync(Guid lessonId, Guid userId);
+    Task<VideoProgressDto> UpdateVideoProgressAsync(Guid lessonId, Guid userId, int watchedPercent);
 }

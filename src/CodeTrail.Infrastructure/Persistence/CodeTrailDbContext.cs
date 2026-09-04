@@ -19,6 +19,7 @@ public class CodeTrailDbContext : DbContext
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
     public DbSet<LessonAttempt> LessonAttempts => Set<LessonAttempt>();
     public DbSet<AnswerSubmission> AnswerSubmissions => Set<AnswerSubmission>();
+    public DbSet<VideoProgress> VideoProgress => Set<VideoProgress>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

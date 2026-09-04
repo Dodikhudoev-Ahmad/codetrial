@@ -22,4 +22,9 @@ public class LessonsController(ILessonService lessonService, IAttemptService att
     [Authorize(Roles = nameof(UserRole.Student))]
     public async Task<ActionResult<AttemptResultDto>> SubmitAttempt(Guid id, SubmitAttemptRequest request) =>
         Ok(await attemptService.SubmitAttemptAsync(id, User.GetUserId(), request));
+
+    [HttpPut("{id:guid}/video-progress")]
+    [Authorize(Roles = nameof(UserRole.Student))]
+    public async Task<ActionResult<VideoProgressDto>> UpdateVideoProgress(Guid id, UpdateVideoProgressRequest request) =>
+        Ok(await lessonService.UpdateVideoProgressAsync(id, User.GetUserId(), request.WatchedPercent));
 }

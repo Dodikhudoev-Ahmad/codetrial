@@ -1,6 +1,8 @@
 using CodeTrail.Application.Attempts.Dtos;
 using CodeTrail.Application.Attempts.Exceptions;
+using CodeTrail.Application.Lessons;
 using CodeTrail.Application.Lessons.Exceptions;
+using CodeTrail.Domain.Entities;
 using CodeTrail.Tests.TestSupport;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,5 +113,52 @@ public class AttemptServiceTests
 
         await Assert.ThrowsAsync<InvalidAttemptSubmissionException>(() =>
             fixture.AttemptService.SubmitAttemptAsync(lessonId, fixture.Student.Id, new SubmitAttemptRequest { Answers = [] }));
+    }
+
+    [Fact]
+    public async Task LessonWithVideo_RejectsAttemptBelowTheWatchThreshold()
+    {
+        var fixture = await AttemptTestFixture.CreateAsync(lessonCount: 1);
+        var lessonId = fixture.Lessons[0].Id;
+        fixture.Lessons[0].YouTubeVideoId = "dQw4w9WgXcQ";
+        await fixture.Db.SaveChangesAsync();
+
+        var request = Answer(fixture.QuestionId(1), fixture.CorrectOptionId(1));
+
+        await Assert.ThrowsAsync<VideoNotWatchedException>(() =>
+            fixture.AttemptService.SubmitAttemptAsync(lessonId, fixture.Student.Id, request));
+    }
+
+    [Fact]
+    public async Task LessonWithVideo_AcceptsAttemptOnceWatchThresholdIsMet()
+    {
+        var fixture = await AttemptTestFixture.CreateAsync(lessonCount: 1);
+        var lessonId = fixture.Lessons[0].Id;
+        fixture.Lessons[0].YouTubeVideoId = "dQw4w9WgXcQ";
+        fixture.Db.VideoProgress.Add(new VideoProgress
+        {
+            UserId = fixture.Student.Id,
+            LessonId = lessonId,
+            WatchedPercent = VideoProgressRules.RequiredWatchPercent,
+            UpdatedAt = DateTime.UtcNow
+        });
+        await fixture.Db.SaveChangesAsync();
+
+        var request = Answer(fixture.QuestionId(1), fixture.CorrectOptionId(1));
+        var result = await fixture.AttemptService.SubmitAttemptAsync(lessonId, fixture.Student.Id, request);
+
+        Assert.True(result.IsPassed);
+    }
+
+    [Fact]
+    public async Task LessonWithoutVideo_IgnoresWatchProgressEntirely()
+    {
+        var fixture = await AttemptTestFixture.CreateAsync(lessonCount: 1);
+        var lessonId = fixture.Lessons[0].Id;
+        var request = Answer(fixture.QuestionId(1), fixture.CorrectOptionId(1));
+
+        var result = await fixture.AttemptService.SubmitAttemptAsync(lessonId, fixture.Student.Id, request);
+
+        Assert.True(result.IsPassed);
     }
 }

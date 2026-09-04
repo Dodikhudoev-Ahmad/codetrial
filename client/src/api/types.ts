@@ -116,8 +116,17 @@ export interface LessonDetailDto {
   theoryMarkdown: string;
   xpReward: number;
   youTubeVideoId: string | null;
+  videoWatchedPercent: number;
   questions: QuestionPreviewDto[];
 }
+
+export interface VideoProgressDto {
+  watchedPercent: number;
+}
+
+// Business rule: with a video attached, an attempt can't be submitted until this much
+// of it has been watched (mirrors the backend's Lessons.VideoProgressRules).
+export const VIDEO_WATCH_THRESHOLD_PERCENT = 60;
 
 export interface AnswerRequest {
   questionId: string;

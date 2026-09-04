@@ -28,6 +28,19 @@ public class AttemptService(
 
         await accessGuard.EnsureUnlockedAsync(lessonId, lesson.CourseId, userId);
 
+        if (lesson.YouTubeVideoId is not null)
+        {
+            var watchedPercent = await db.VideoProgress
+                .Where(v => v.LessonId == lessonId && v.UserId == userId)
+                .Select(v => v.WatchedPercent)
+                .FirstOrDefaultAsync();
+
+            if (watchedPercent < VideoProgressRules.RequiredWatchPercent)
+            {
+                throw new VideoNotWatchedException(lessonId, watchedPercent);
+            }
+        }
+
         var todayUtc = DateTime.UtcNow.Date;
         var attemptsToday = await db.LessonAttempts.CountAsync(a =>
             a.UserId == userId && a.LessonId == lessonId &&

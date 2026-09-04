@@ -9,5 +9,6 @@ public class LessonDetailDto
     public string TheoryMarkdown { get; set; } = string.Empty;
     public int XpReward { get; set; }
     public string? YouTubeVideoId { get; set; }
+    public int VideoWatchedPercent { get; set; }
     public List<QuestionPreviewDto> Questions { get; set; } = [];
 }
